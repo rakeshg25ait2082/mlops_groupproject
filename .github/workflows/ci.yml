@@ -31,7 +31,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt 
-          pip install flake8 flake8-docstrings
+          pip install flake8
 
       - name: Debug Python
         run: |
