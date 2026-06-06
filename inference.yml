@@ -61,7 +61,7 @@ jobs:
             with open("inference_result.json") as f:
                 result = json.load(f)
             
-            # Initialise W&B run
+            # Initialise wandb run
             run = wandb.init(
                 project = "mlops-assignment3",
                 name    = f"inference-github-actions-{result['run_id']}",
@@ -91,6 +91,6 @@ jobs:
             )
             run.log({"inference_results": table})
             
-            print(f"\nW&B run logged: {run.get_url()}")
+            print(f"\nwandb run logged: {run.get_url()}")
             wandb.finish()
             PYEOF
