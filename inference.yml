@@ -79,7 +79,7 @@ jobs:
             run.summary["confidence"] = result["confidence"]
             run.summary["input_text"] = result["input_text"]
             
-            # Log as a W&B Table (visible in dashboard under "Tables")
+            # Log as a wandb table
             table = wandb.Table(
                 columns=["input_text", "label", "confidence", "model"],
                 data=[[
