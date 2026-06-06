@@ -1,0 +1,96 @@
+name: inference
+
+on:
+  workflow_dispatch:
+    inputs:
+      input_text:
+        description: "Text to classify the movie review"
+        required: true
+        default: "This is a nice movie"
+      log_to_wandb:
+        description: "Log inference data to wandb"
+        required: false
+        default: "true"
+
+jobs:
+  infer:
+    name: run inference
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: python setup
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: "pip"
+      - name: install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install transformers huggingface_hub torch wandb
+
+      - name: authenticate HF
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          run: |
+            python - <<'PYEOF'
+            import os
+            from huggingface_hub import login, whoami
+            token = os.environ["HF_TOKEN"]
+            login(token=token)
+            info = whoami()
+            print(f"Logged in to Hugging Face as: {info['name']}")
+            PYEOF
+
+      - name: run inference
+        env:
+          HF_TOKEN: ${{secrets.HF_TOKEN}}
+          INPUT_TEXT: ${{github.event.inputs.input_text}}
+        run: python src/inference.py
+
+      - name: "logging inference to wandb"
+        if: ${{ github.event.inputs.log_to_wandb == 'true' }}
+        env:
+            WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+        run: |
+            python - <<'PYEOF'
+            import os, json, wandb
+            
+            # Read inference result from previous step
+            with open("inference_result.json") as f:
+                result = json.load(f)
+            
+            # Initialise W&B run
+            run = wandb.init(
+                project = "mlops-assignment3",
+                name    = f"inference-github-actions-{result['run_id']}",
+                job_type= "inference",
+                config  = {
+                    "model"       : result["model"],
+                    "platform"    : "GitHub Actions",
+                    "triggered_by": result["triggered_by"],
+                    "run_id"      : result["run_id"],
+                },
+            )
+            
+            # Log scalar summary
+            run.summary["label"]      = result["label"]
+            run.summary["confidence"] = result["confidence"]
+            run.summary["input_text"] = result["input_text"]
+            
+            # Log as a W&B Table (visible in dashboard under "Tables")
+            table = wandb.Table(
+                columns=["input_text", "label", "confidence", "model"],
+                data=[[
+                    result["input_text"],
+                    result["label"],
+                    result["confidence"],
+                    result["model"],
+                ]]
+            )
+            run.log({"inference_results": table})
+            
+            print(f"\nW&B run logged: {run.get_url()}")
+            wandb.finish()
+            PYEOF
