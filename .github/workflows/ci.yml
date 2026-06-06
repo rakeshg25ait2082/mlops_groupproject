@@ -41,7 +41,7 @@ jobs:
       - name: run flake8
         run: | 
           flake8 src/ \
-          --max-line-lenght=150 \
+          --max-line-length=150 \
           --exclude=__pycache__, .git \
           --statistics \
           --count
