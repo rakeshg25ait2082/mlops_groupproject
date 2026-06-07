@@ -1,130 +1,20 @@
-name: inference
-
+# .github/workflows/inference.yml
+name: Inference
 on:
-  workflow_call:
-    inputs:
-      input_text:
-        description: "Text to classify the movie review"
-        required: false
-        type: string
-        default: "This is a nice movie"
-      log_to_wandb:
-        description: "Log inference data to wandb"
-        required: false
-        type: string
-        default: "false"
-    secrets:
-      HF_TOKEN:
-        required: false
-      WANDB_API_KEY:
-        required: false
-
   workflow_dispatch:
     inputs:
       input_text:
-        description: "Text to classify the movie review"
+        description: 'Text to classify'
         required: true
-        default: "This is a nice movie"
-      log_to_wandb:
-        description: "Log inference data to wandb"
-        required: false
-        default: "true"
-
 jobs:
   infer:
-    name: run inference
     runs-on: ubuntu-latest
-
     steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-
-      - name: python setup
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: "pip"
-
-      - name: install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install transformers huggingface_hub torch wandb
-
-      - name: run inference
-        env:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install -r requirements.txt
+      - env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          INPUT_TEXT: ${{ inputs.input_text || github.event.inputs.input_text }}
+          INPUT_TEXT: ${{ github.event.inputs.input_text }}
         run: python src/inference.py
-
-      - name: build inference_result.json for wandb
-        if: ${{ (inputs.log_to_wandb == 'true') || (github.event_name == 'workflow_dispatch' && github.event.inputs.log_to_wandb == 'true') }}
-        env:
-          INPUT_TEXT: ${{ inputs.input_text || github.event.inputs.input_text }}
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_RUN_ID: ${{ github.run_id }}
-        run: |
-          python - <<'PYEOF'
-          import json
-          import os
-          from src.inference import HF_REPO_ID, predict
-
-          text = os.environ.get("INPUT_TEXT", "This is a nice movie")
-          pred = predict(text)
-
-          payload = {
-              "input_text": text,
-              "label": pred["label"],
-              "confidence": pred["score"],
-              "model": HF_REPO_ID,
-              "triggered_by": os.environ.get("GITHUB_ACTOR", "github-actions"),
-              "run_id": os.environ.get("GITHUB_RUN_ID", "local"),
-          }
-
-          with open("inference_result.json", "w", encoding="utf-8") as f:
-              json.dump(payload, f, indent=2)
-
-          print("Created inference_result.json")
-          PYEOF
-
-      - name: logging inference to wandb
-        if: ${{ (inputs.log_to_wandb == 'true') || (github.event_name == 'workflow_dispatch' && github.event.inputs.log_to_wandb == 'true') }}
-        env:
-          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
-        run: |
-          python - <<'PYEOF'
-          import json
-          import wandb
-
-          with open("inference_result.json", encoding="utf-8") as f:
-              result = json.load(f)
-
-          run = wandb.init(
-              project="mlops-assignment3",
-              name=f"inference-github-actions-{result['run_id']}",
-              job_type="inference",
-              config={
-                  "model": result["model"],
-                  "platform": "GitHub Actions",
-                  "triggered_by": result["triggered_by"],
-                  "run_id": result["run_id"],
-              },
-          )
-
-          run.summary["label"] = result["label"]
-          run.summary["confidence"] = result["confidence"]
-          run.summary["input_text"] = result["input_text"]
-
-          table = wandb.Table(
-              columns=["input_text", "label", "confidence", "model"],
-              data=[[
-                  result["input_text"],
-                  result["label"],
-                  result["confidence"],
-                  result["model"],
-              ]]
-          )
-          run.log({"inference_results": table})
-
-          print(f"wandb run logged: {run.get_url()}")
-          wandb.finish()
-          PYEOF

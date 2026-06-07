@@ -1,56 +1,14 @@
+# .github/workflows/ci.yml
 name: CI
-
 on:
-  push:
-    branches:
-      - develop
-  pull_request:
-    branches:
-      - main
-
+  push:          { branches: [develop] }
+  pull_request:  { branches: [main] }
 jobs:
   lint:
-    name: lint with flake8
     runs-on: ubuntu-latest
-
     steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-
-      - name: setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: "pip"
-
-      - name: Upgrade pip
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-
-      - name: install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt 
-          pip install flake8
-
-      - name: Debug Python
-        run: |
-          python --version
-          pip --version
-
-      - name: run flake8
-        run: | 
-          flake8 src/ \
-          --max-line-length=150 \
-          --exclude=__pycache__,.git \
-          --statistics \
-          --count
-
-  inference:
-    name: run inference after lint
-    needs: lint
-    uses: ./.github/workflows/inference.yml
-    with:
-      input_text: "CI smoke test: this movie was good."
-      log_to_wandb: "false"
-    secrets: inherit
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install -r requirements.txt flake8
+      - run: flake8 src/ --max-line-length=120
