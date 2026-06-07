@@ -1,4 +1,3 @@
-"""Run sentiment inference using a fine-tuned DistilBERT model."""
 
 import os
 import json
@@ -25,7 +24,6 @@ model.eval()
 
 
 def predict(text: str):
-    """Predict sentiment label and confidence score for an input string."""
     encoded = tokenizer(
         text,
         return_tensors="pt",
