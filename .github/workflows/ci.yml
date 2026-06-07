@@ -45,3 +45,12 @@ jobs:
           --exclude=__pycache__,.git \
           --statistics \
           --count
+
+  inference:
+    name: run inference after lint
+    needs: lint
+    uses: ./.github/workflows/inference.yml
+    with:
+      input_text: "CI smoke test: this movie was good."
+      log_to_wandb: "false"
+    secrets: inherit
