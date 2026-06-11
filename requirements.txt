@@ -2,8 +2,3 @@ torch
 transformers
 tokenizers
 huggingface_hub
-pandas
-numpy
-scikit-learn
-fastapi
-uvicorn
