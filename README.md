@@ -10,7 +10,7 @@ Fine-tuned **DistilBERT** on the IMDB movie reviews dataset for binary sentiment
 |----------|-----|
 | GitHub Repo | https://github.com/rakeshg25ait2082/mlops_groupproject |
 | Hugging Face Model | https://huggingface.co/Nlp0187/distilbert-imdb-reviews-v1 |
-| Docker Image | https://hub.docker.com/repository/docker/ashwani0187/mlops-a3-inference |
+| Docker Image | https://hub.docker.com/r/ashwani0187/mlops-a3-inference |
 | WandB Project | https://wandb.ai/ashwinmmmec794-iit-jodhpur/Mlops-Group-Project |
 | Kaggle Notebook (v1) | https://www.kaggle.com/code/ashwanig20ait2022/mlops-project-transformers-model-imdb-v-1?scriptVersionId=325555945 |
 | Kaggle Notebook (v2) | https://www.kaggle.com/code/ashwanig20ait2022/mlops-project-transformers-model-imdb-v-1?scriptVersionId=325561163 |
