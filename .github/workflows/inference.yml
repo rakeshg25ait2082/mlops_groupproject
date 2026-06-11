@@ -1,10 +1,9 @@
-# .github/workflows/inference.yml
 name: Inference
 on:
   workflow_dispatch:
     inputs:
       input_text:
-        description: 'Text to classify'
+        description: 'This is the input text for inference'
         required: true
 jobs:
   infer:
@@ -13,6 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
+      - run: python --version
       - run: pip install -r requirements.txt
       - env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
