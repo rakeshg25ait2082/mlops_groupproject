@@ -1,6 +1,16 @@
 # ---- Base ----
 FROM python:3.11-slim
 
+# ---- Image Metadata ----
+LABEL maintainer="MLOps Team"
+LABEL description="DistilBERT IMDb sentiment analysis inference container"
+LABEL version="1.0"
+
+# ---- OCI Standard Labels ----
+LABEL org.opencontainers.image.title="IMDb Sentiment Analysis"
+LABEL org.opencontainers.image.description="DistilBERT inference container"
+LABEL org.opencontainers.image.licenses="MIT"
+
 # ---- Build arg: HF model name (overridable at build time) ----
 ARG HF_MODEL_NAME=Nlp0187/distilbert-imdb-reviews-v1
 ENV HF_MODEL_NAME=${HF_MODEL_NAME}
