@@ -23,7 +23,7 @@ model.to(DEVICE)
 model.eval()
 
 
-def predict(text: str):
+def predict(text: str) -> dict:
     encoded = tokenizer(
         text,
         return_tensors="pt",
@@ -41,7 +41,7 @@ def predict(text: str):
 
     return {
         "label": model.config.id2label[predicted_id],
-        "score": round(confidence, 4),
+        "score": round(confidence, 3),
     }
 
 
