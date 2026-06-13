@@ -25,7 +25,7 @@ The objective was not only to achieve strong classification performance but also
 
 | Component            | Technology                             |
 | -------------------- | -------------------------------------- |
-| Model                | DistilBERT (Hugging Face Transformers) |
+| Model                | DistilBERT base uncased(Hugging Face Transformers) |
 | Dataset              | IMDB Movie Reviews                     |
 | Training Platform    | Kaggle GPU Notebooks                   |
 | Experiment Tracking  | Weights & Biases (W&B)                 |
@@ -54,8 +54,8 @@ Binary Sentiment Classification
 
 Classes:
 
-* Positive
-* Negative
+* Positive (1)
+* Negative (0)
 
 ### Data Preparation and Normalisation
 
@@ -63,7 +63,7 @@ The dataset was inspected for quality issues and prepared for model training usi
 
 Preprocessing steps included:
 
-* Removal of missing or invalid records
+* Removal of missing or invalid records, html tags, punctuation marks
 * Text normalization and cleanup
 * Label encoding
 * Tokenization using the DistilBERT tokenizer
@@ -82,7 +82,7 @@ Preprocessing steps included:
 
 ## Model Selection
 
-DistilBERT was selected because it provides an excellent balance between performance and efficiency. It retains approximately 97% of BERT's language understanding capabilities while reducing model size and inference time significantly. The lightweight architecture makes it suitable for Kaggle GPU training, Docker deployment, and GitHub Actions-based inference workflows. Its strong performance on text classification tasks makes it an ideal choice for sentiment analysis on the IMDB dataset.
+DistilBERT base uncased was selected because it provides an excellent balance between performance and efficiency. It retains approximately 97% of BERT's language understanding capabilities while reducing model size and inference time significantly. The lightweight architecture makes it suitable for Kaggle GPU training, Docker deployment, and GitHub Actions-based inference workflows. Its strong performance on text classification tasks makes it an ideal choice for sentiment analysis on the IMDB dataset.
 
 ---
 
