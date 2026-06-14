@@ -96,6 +96,10 @@ mlops_groupproject/
 │       ├── ci.yml
 │       └── inference.yml
 │
+├── Notebooks/
+│   ├── mlops-project-transformers-model-imdb-v-1.ipynb
+│   └── mlops-project-transformers-model-imdb-v-2.ipynb
+|
 ├── report/
 │   └── MLOps_FinalGroupReport_Group1.pdf
 |
