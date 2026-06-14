@@ -57,7 +57,6 @@ def main() -> None:
     repo_id = os.environ.get("HF_MODEL_NAME", DEFAULT_MODEL)
     device = get_device()
     tokenizer, model = load_model(repo_id, device)
-    
     input_text = os.environ.get("INPUT_TEXT")
     if not input_text:
         input_text = DEFAULT_SAMPLE
