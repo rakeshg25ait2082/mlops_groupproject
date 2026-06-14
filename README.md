@@ -96,6 +96,9 @@ mlops_groupproject/
 │       ├── ci.yml
 │       └── inference.yml
 │
+├── report/
+│   └── MLOps_FinalGroupReport_Group1.pdf
+|
 ├── src/
 │   └── inference.py
 │
