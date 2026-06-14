@@ -58,6 +58,7 @@ def main() -> None:
     device = get_device()
     tokenizer, model = load_model(repo_id, device)
 
+    print('Please enter the text...', '\n')
     input_text = os.environ.get("INPUT_TEXT")
     if not input_text:
         input_text = DEFAULT_SAMPLE
