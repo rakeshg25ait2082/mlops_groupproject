@@ -98,6 +98,7 @@ mlops_groupproject/
 │
 ├── report/
 │   └── MLOps_FinalGroupReport_Group1.pdf
+|
 ├── src/
 │   └── inference.py
 │
